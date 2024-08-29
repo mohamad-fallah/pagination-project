@@ -13,8 +13,19 @@ export default function App() {
       .then((res) => res.json())
       .then((datas) => {
         setTodos(datas);
+        let endIndex = pageSize * currentPage;
+        let startIndex = endIndex - pageSize;
+        let allShowTodos = datas.slice(startIndex, endIndex);
+        setPaginatedTodos(allShowTodos);
       });
   }, []);
+
+  useEffect(() => {
+    let endIndex = pageSize * currentPage;
+    let startIndex = endIndex - pageSize;
+    let allShowTodos = todos.slice(startIndex, endIndex);
+    setPaginatedTodos(allShowTodos);
+  }, [currentPage])
 
   const changePaginate = (newpage) => {
     setcurrentPage(newpage);
@@ -38,7 +49,7 @@ export default function App() {
             </tr>
           </thead>
           <tbody>
-            {todos.map((todo) => (
+            {paginatedTodos.map((todo) => (
               <tr key={todos.id}>
                 <td>{todo.id}</td>
                 <td>{todo.userId}</td>
@@ -61,6 +72,7 @@ export default function App() {
         <ul className="pagination">
           {pagesNumber.map((pageNumber) => (
             <li
+            style={{cursor:"pointer"}}
               className={
                 pageNumber + 1 === currentPage
                   ? "page-item active"
